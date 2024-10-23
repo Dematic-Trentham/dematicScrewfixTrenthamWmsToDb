@@ -2,7 +2,7 @@
 //WMS functions
 //Created by: JWL
 //Date: 2022-12-30
-//Last modified: 2024/10/23 17:22:44
+//Last modified: 2024/10/23 17:26:44
 //Version: 0.0.1
 
 import * as puppeteer from "puppeteer";
@@ -15,7 +15,7 @@ import browser from "../browser/browser.js";
 
 import db from "../db/db.js";
 
-import { getParameterFromDB } from "src/misc/getParameterFromDB.js";
+import { getParameterFromDB } from "../misc/getParameterFromDB.js";
 
 //go to the WMS and login using the username and password provided, then return the host IP
 
