@@ -33,7 +33,7 @@ jobs:
           curl -H "Authorization: Bearer tokentokentokenlikeme" 192.168.1.100:8081/v1/update
       - name: Clean up Docker images
         run: |
-          docker rmi $(docker images -f "dangling=true" -q) || true
+          docker system prune -f
 
   publish-test:
     runs-on: ubuntu-latest
@@ -52,4 +52,4 @@ jobs:
           curl -H "Authorization: Bearer tokentokentokenlikeme" 192.168.1.100:8081/v1/update
       - name: Clean up Docker images
         run: |
-          docker rmi $(docker images -f "dangling=true" -q) || true
+          docker system prune -f
