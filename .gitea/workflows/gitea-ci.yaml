@@ -31,6 +31,7 @@ jobs:
       - name: Update Container
         run: |
           curl -H "Authorization: Bearer tokentokentokenlikeme" 192.168.1.100:8081/v1/update
+
   publish-test:
     runs-on: ubuntu-latest
     needs: build
@@ -46,3 +47,9 @@ jobs:
       - name: Update Container
         run: |
           curl -H "Authorization: Bearer tokentokentokenlikeme" 192.168.1.100:8081/v1/update
+  cleanup:
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Clean up Docker images after build and push.
+        run: docker image prune -af
