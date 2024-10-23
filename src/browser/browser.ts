@@ -2,20 +2,17 @@
 //Browser functions
 //Created by: JWL
 //Date: 2022-12-30
-//Last modified: 2024/10/23 12:28:14
+//Last modified: 2024/10/23 17:18:01
 //Version: 0.0.1
 
 import * as puppeteer from "puppeteer";
 
 import wms from "./wms.js";
 
-//@ts-ignore
-import misc from "../misc.js";
-
 //start up and return the browser object
 async function startBrowser(headless: boolean): Promise<puppeteer.Browser> {
 	//am i inside a docker container?
-	const isDocker = misc.isDocker();
+	const isDocker = true;
 
 	console.log("Is Docker: " + isDocker);
 
