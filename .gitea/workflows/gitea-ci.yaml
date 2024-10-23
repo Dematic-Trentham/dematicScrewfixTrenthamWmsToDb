@@ -19,7 +19,7 @@ jobs:
   publish-main:
     runs-on: ubuntu-latest
     needs: build
-    if: gitea.ref == 'refs/heads/master'
+    if: gitea.ref == 'refs/heads/main'
     steps:
       - uses: https://github.com/actions/checkout@v4
       - name: Log in to Docker Hub
