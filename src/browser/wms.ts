@@ -2,7 +2,7 @@
 //WMS functions
 //Created by: JWL
 //Date: 2022-12-30
-//Last modified: 2024/10/23 13:26:38
+//Last modified: 2024/10/23 14:30:48
 //Version: 0.0.1
 
 import * as puppeteer from "puppeteer";
@@ -10,10 +10,10 @@ import * as puppeteer from "puppeteer";
 // @ts-ignore
 import mysql from "../db/mysqlConnection.js";
 import browser from "../browser/browser.js";
-import wmsLogs from "./logs/wmsLogs.js";
-import exceptions from "./exceptions/index.js";
-import tours from "./tours/index.js";
-import dms from "./dms/index.js";
+//import wmsLogs from "./logs/wmsLogs.js";
+//import exceptions from "./exceptions/index.js";
+//import tours from "./tours/index.js";
+//import dms from "./dms/index.js";
 
 import db from "../db/db.js";
 
@@ -816,9 +816,9 @@ export default {
 	loginToWMS,
 	checkForUls,
 	updateOrderStartStatus,
-	wmsLogs,
+	//wmsLogs,
 	checkPassword,
-	exceptions,
-	tours,
-	dms,
+	//exceptions,
+	//tours,
+	//dms,
 };
