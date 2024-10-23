@@ -17,7 +17,7 @@
 		"prisma-pull": "npx prisma db pull --schema=./node_modules/masterPrismaSchema/prisma/schema",
 		"prisma-push": "npx prisma db push --schema=./node_modules/masterPrismaSchema/prisma/schema",
 		"packageJsonStripper": "node tools/packageJsonStripper.js",
-		"build-docker": "docker build -t dematicScrewfixtrenthamwmstodb ."
+		"build-docker": "docker build -t dematicscrewfixtrenthamwmstodb ."
 	},
 	"repository": {
 		"type": "git",
