@@ -1,40 +1,40 @@
 {
-  "name": "dematicscrewfixtrenthamwmstodb",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "clean": "rimraf dist",
-    "start": "node index.js",
-    "startDev": "node build/index.js --enable-source-maps",
-    "startDevWatch": "nodemon build/index.js",
-    "startDev2Watch": "nodemon src/index.ts",
-    "startDevDockInspect": "nodemon build/index.js --inspect-brk=0.0.0.0",
-    "buildOnce": "tsc",
-    "build": "tsc --watch",
-    "prisma-merge": "prisma format --schema=./node_modules/masterPrismaSchema/prisma/schema/ && npm run prisma-gen && echo 'complete!'",
-    "prisma-gen": "prisma generate --schema=./node_modules/masterPrismaSchema/prisma/schema",
-    "prisma-pull": "npx prisma db pull --schema=./node_modules/masterPrismaSchema/prisma/schema",
-    "prisma-push": "npx prisma db push --schema=./node_modules/masterPrismaSchema/prisma/schema",
-    "packageJsonStripper": "node tools/packageJsonStripper.js",
-    "build-docker": "docker build -t dematicScrewfixTrenthamWmsToDb ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "http://10.4.5.227:3080/DematicScrewfixTrentham/dematicScrewfixTrenthamWmsToDb"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@prisma/client": "^5.21.1",
-    "node-cron": "^3.0.3",
-    "puppeteer": "^23.6.0"
-  },
-  "devDependencies": {
-    "@types/node": "^22.7.9",
-    "@types/node-cron": "^3.0.11",
-    "masterPrismaSchema": "git+https://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:x-oauth-basic@github.com/jameswlyons/dematicDashboardScrewfixTrenthamMasterPrismaSchema.git",
-    "prettier": "^3.3.3",
-    "prisma": "^5.21.1"
-  }
+	"name": "dematicscrewfixtrenthamwmstodb",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"clean": "rimraf dist",
+		"start": "node index.js",
+		"startDev": "node build/index.js --enable-source-maps",
+		"startDevWatch": "nodemon build/index.js",
+		"startDev2Watch": "nodemon src/index.ts",
+		"startDevDockInspect": "nodemon build/index.js --inspect-brk=0.0.0.0",
+		"buildOnce": "tsc",
+		"build": "tsc --watch",
+		"prisma-merge": "prisma format --schema=./node_modules/masterPrismaSchema/prisma/schema/ && npm run prisma-gen && echo 'complete!'",
+		"prisma-gen": "prisma generate --schema=./node_modules/masterPrismaSchema/prisma/schema",
+		"prisma-pull": "npx prisma db pull --schema=./node_modules/masterPrismaSchema/prisma/schema",
+		"prisma-push": "npx prisma db push --schema=./node_modules/masterPrismaSchema/prisma/schema",
+		"packageJsonStripper": "node tools/packageJsonStripper.js",
+		"build-docker": "docker build -t dematicScrewfixtrenthamwmstodb ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "http://10.4.5.227:3080/DematicScrewfixTrentham/dematicScrewfixTrenthamWmsToDb"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@prisma/client": "^5.21.1",
+		"node-cron": "^3.0.3",
+		"puppeteer": "^23.6.0"
+	},
+	"devDependencies": {
+		"@types/node": "^22.7.9",
+		"@types/node-cron": "^3.0.11",
+		"masterPrismaSchema": "git+https://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:x-oauth-basic@github.com/jameswlyons/dematicDashboardScrewfixTrenthamMasterPrismaSchema.git",
+		"prettier": "^3.3.3",
+		"prisma": "^5.21.1"
+	}
 }
