@@ -11,6 +11,9 @@ RUN apk add --no-cache git --virtual .gyp python3 make g++
 # Copy package.json and package-lock.json
 COPY package.json ./
 
+# We don't need the standalone Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+
 # Install dependencies
 RUN npm install --legacy-peer-deps
 RUN npm install -g typescript
@@ -38,6 +41,9 @@ COPY --from=builder /app/build ./build
 # Copy package.json and package-lock.json
 COPY --from=builder /app/packageProduction.json ./package.json
 
+# We don't need the standalone Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+
 # Install only production dependencies
 RUN npm install
 
@@ -59,6 +65,21 @@ COPY --from=builder /app/build ./build
 # Copy the Prisma client from the builder stage
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+
+RUN apk update && apk add --no-cache nmap && \
+    echo @edge http://nl.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories && \
+    echo @edge http://nl.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories && \
+    apk update 
+
+RUN apk add --no-cache \
+      chromium \
+      harfbuzz \
+      "freetype>2.8" \
+      ttf-freefont \
+      nss \
+      tzdata
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 # set the memory limit to  3gb and run the application
 CMD ["node","build/index.js"]
