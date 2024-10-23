@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  plc:
+    container_name: screwfix-trentham-plc-to-db
+    image: screwfix-trentham-plc-to-db
+    environment:
+      - DB_HOST=10.4.5.227
+      - DB_USER=nodeUser
+      - DB_PASSWORD=nodeuser
+      - DB_DATABASE=dematic_dashboard
+      - DATABASE_URL=mysql://node:nodenode@10.4.5.227:3306/dematicScrewfixTrenthamDashboard
+
+volumes:
+  db:
+    driver: local

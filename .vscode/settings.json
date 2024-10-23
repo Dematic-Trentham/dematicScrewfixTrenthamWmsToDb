@@ -1,0 +1,11 @@
+{
+    "cSpell.words": [
+        "Screwfix"
+    ],
+    "editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit"
+	},
+	"typescript.tsserver.experimental.enableProjectDiagnostics": true,
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode"
+}
