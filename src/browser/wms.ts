@@ -2,7 +2,7 @@
 //WMS functions
 //Created by: JWL
 //Date: 2022-12-30
-//Last modified: 2024/10/23 17:26:44
+//Last modified: 2024/10/23 18:10:18
 //Version: 0.0.1
 
 import * as puppeteer from "puppeteer";
@@ -53,8 +53,8 @@ export async function loginToWMS(
 	await page.evaluate(
 		// @ts-ignore
 		(val) => (document.querySelector("#uid").value = val),
-		// @ts-ignore
-		wmsUserPass.username
+
+		wmsUserPassObj.username
 	);
 	// @ts-ignore
 	await page.evaluate(
@@ -64,8 +64,8 @@ export async function loginToWMS(
 				(element as HTMLInputElement).value = val;
 			}
 		},
-		// @ts-ignore
-		wmsUserPass.password
+
+		wmsUserPassObj.password
 	);
 
 	//click login button
@@ -347,6 +347,9 @@ export async function updateOrderStartStatus(
 
 	//lets work out the field name for totes
 	let mainTableSelector = fields.toteTableSelector;
+
+	console.log(mainTableSelector);
+
 	let mainTable = await pageTotes.evaluate(
 		(mainTableSelector) => document.getElementById(mainTableSelector),
 		mainTableSelector

@@ -1,7 +1,7 @@
 //Service for Dematic Dashboard Screwfix trentham to collect data from WMS ( Matflow ) and push into the dashboard database
 //Created by: JWL
 //Date: 2024/10/23
-//Last modified: 2024/10/23 12:29:45
+//Last modified: 2024/10/23 17:58:57
 const version = "1.0.0";
 
 //imports
@@ -28,9 +28,13 @@ cron.schedule("*/5 * * * * *", async () => {
 	const start = Date.now();
 	const tasks = [
 		{
-			name: "readShuttlesFaults",
+			name: "read Order Start",
 			task: () => {
-				console.log("test");
+				if (pages.totePage == null || pages.CartonPage == null) {
+					return;
+				}
+
+				browser.wms.updateOrderStartStatus(pages.totePage, pages.CartonPage);
 			},
 		},
 	];
@@ -163,3 +167,5 @@ async function checkPassword() {
 
 	SecondsStillRunning5 = "notRunning";
 }
+
+await checkBrowserStatus();

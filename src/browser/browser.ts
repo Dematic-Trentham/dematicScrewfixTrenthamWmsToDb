@@ -2,7 +2,7 @@
 //Browser functions
 //Created by: JWL
 //Date: 2022-12-30
-//Last modified: 2024/10/23 17:18:01
+//Last modified: 2024/10/23 17:52:13
 //Version: 0.0.1
 
 import * as puppeteer from "puppeteer";
@@ -62,6 +62,7 @@ async function startBrowser(headless: boolean): Promise<puppeteer.Browser> {
 	const browser = await puppeteer.launch(browserOptions);
 
 	// console.log("Make 2");
+	console.log("Browser started");
 
 	//return browser object
 	return browser;
