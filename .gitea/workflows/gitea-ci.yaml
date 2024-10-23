@@ -26,8 +26,8 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push to Docker Hub
         run: |
-          docker tag dematicScrewfixTrenthamWmsToDb:latest jwlyons/dematicScrewfixTrenthamWmsToDb:latest
-          docker push jwlyons/dematicScrewfixTrenthamWmsToDb
+          docker tag dematicscrewfixtrenthamwmstodb:latest jwlyons/dematicscrewfixtrenthamwmstodb:latest
+          docker push jwlyons/dematicscrewfixtrenthamwmstodb
       - name: Update Container
         run: |
           curl -H "Authorization: Bearer tokentokentokenlikeme" 192.168.1.100:8081/v1/update
@@ -45,8 +45,8 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Push to Docker Hub
         run: |
-          docker tag sdematicScrewfixTrenthamWmsToDb:latest jwlyons/dematicScrewfixTrenthamWmsToDb:testing
-          docker push jwlyons/dematicScrewfixTrenthamWmsToDb:testing
+          docker tag dematicscrewfixtrenthamwmstodb:latest jwlyons/dematicscrewfixtrenthamwmstodb:testing
+          docker push jwlyons/dematicscrewfixtrenthamwmstodb:testing
       - name: Update Container
         run: |
           curl -H "Authorization: Bearer tokentokentokenlikeme" 192.168.1.100:8081/v1/update
