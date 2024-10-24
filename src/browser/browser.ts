@@ -2,7 +2,7 @@
 //Browser functions
 //Created by: JWL
 //Date: 2022-12-30
-//Last modified: 2024/10/23 17:52:13
+//Last modified: 2024/10/24 11:56:39
 //Version: 0.0.1
 
 import * as puppeteer from "puppeteer";
@@ -30,7 +30,7 @@ async function startBrowser(headless: boolean): Promise<puppeteer.Browser> {
 				"--disable-accelerated-2d-canvas",
 				"--no-first-run",
 				"--no-zygote",
-				"--single-process", // <- this one doesn't works in Windows
+				//"--single-process", // <- this one doesn't works in Windows
 				"--disable-gpu",
 				"--disable-dev-shm-usage",
 			],
