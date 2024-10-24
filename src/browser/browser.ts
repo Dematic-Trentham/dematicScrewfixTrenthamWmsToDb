@@ -2,7 +2,7 @@
 //Browser functions
 //Created by: JWL
 //Date: 2022-12-30
-//Last modified: 2024/10/24 12:08:42
+//Last modified: 2024/10/24 12:18:30
 //Version: 0.0.1
 
 import * as puppeteer from "puppeteer";
@@ -56,7 +56,7 @@ async function startBrowser(headless: boolean): Promise<puppeteer.Browser> {
 		};
 	}
 
-	 console.log("Make 1");
+	 //console.log("Make 1");
 
 	//start the browser and create a browser instance within docker container
 	const browser = await puppeteer.launch(browserOptions);
