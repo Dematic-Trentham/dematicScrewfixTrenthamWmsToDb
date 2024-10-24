@@ -20,10 +20,6 @@
 		"packageJsonStripper": "node tools/packageJsonStripper.js",
 		"build-docker": "docker build -t dematicscrewfixtrenthamwmstodb ."
 	},
-	"repository": {
-		"type": "git",
-		"url": "http://10.4.5.227:3080/DematicScrewfixTrentham/dematicScrewfixTrenthamWmsToDb"
-	},
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
