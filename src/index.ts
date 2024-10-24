@@ -1,7 +1,7 @@
 //Service for Dematic Dashboard Screwfix trentham to collect data from WMS ( Matflow ) and push into the dashboard database
 //Created by: JWL
 //Date: 2024/10/23
-//Last modified: 2024/10/23 17:58:57
+//Last modified: 2024/10/24 12:10:45
 const version = "1.0.0";
 
 //imports
@@ -169,3 +169,52 @@ async function checkPassword() {
 }
 
 await checkBrowserStatus();
+
+//restart the browser every 5 minutes
+cron.schedule("*/5 * * * *", async () => {
+
+	try {
+	  //wait until the function is not running
+	  reload();
+	} catch (e) {
+	  console.log(e);
+	}
+  });
+  
+  async function reload() {
+	if (SecondsStillRunning5 !== "notRunning") {
+	  setTimeout(() => {
+		console.log("Waiting for function to finish c: " + reloadMissedCounter + " " + SecondsStillRunning5);
+		reloadMissedCounter++;
+  
+		if (reloadMissedCounter > 60) {
+		  console.log("Killing process c");
+		  process.exit(0);
+		} else {
+		  reload();
+		}
+	  }, 1000);
+  
+	  return;
+	}
+  
+	SecondsStillRunning5 = "Reload";
+  
+	reloadMissedCounter = 0;
+  
+	//close all the pages
+	await browser.closeBrowser(browserInstance);
+  
+	browserInstance = await browser.startBrowser(true);
+  
+	//login to WMS
+	const host = await browser.wms.loginToWMS(browserInstance);
+  
+	//open the tote page
+	pages.totePage = await browser.openNewTab(browserInstance, host + "/cgi-bin/web_om_td1.exe#scr=workloadlimitssum&LimitTab=2");
+  
+	//open the carton page
+	pages.CartonPage = await browser.openNewTab(browserInstance, host + "/cgi-bin/web_om_td1.exe#scr=std_detail_MAT_FLOW&CurrentDetailTab=1804");
+  
+	SecondsStillRunning5 = "notRunning";
+  }
