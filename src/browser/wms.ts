@@ -2,7 +2,7 @@
 //WMS functions
 //Created by: JWL
 //Date: 2022-12-30
-//Last modified: 2024/10/23 18:10:18
+//Last modified: 2024/10/24 07:47:50
 //Version: 0.0.1
 
 import * as puppeteer from "puppeteer";
@@ -348,8 +348,6 @@ export async function updateOrderStartStatus(
 	//lets work out the field name for totes
 	let mainTableSelector = fields.toteTableSelector;
 
-	console.log(mainTableSelector);
-
 	let mainTable = await pageTotes.evaluate(
 		(mainTableSelector) => document.getElementById(mainTableSelector),
 		mainTableSelector
@@ -370,63 +368,39 @@ export async function updateOrderStartStatus(
 		return;
 	}
 
-	//get the main table
-	const mainTableSelectorObject = document.getElementById(mainTableSelector);
-
-	//if the main table is not found then throw an error
-	if (mainTableSelectorObject == null) {
-		console.error("Order Start Status Update - Main table not found");
-		return;
-	}
-
 	//get column 2 row 2 of the main table for tote1
 	let toteText1 = await pageTotes.evaluate(
 		//@ts-ignore
-		(mainTableSelector) =>
-			(mainTableSelectorObject as HTMLTableElement).rows[1].cells[1].innerText,
+		(mainTableSelector) => {
+			if (
+				(document.getElementById(mainTableSelector) as HTMLTableElement)
+					?.rows[1].cells[1] == null
+			) {
+				return "";
+			}
+
+			return (document.getElementById(mainTableSelector) as HTMLTableElement)
+				?.rows[1].cells[1].innerText;
+		},
 		mainTableSelector
 	);
 
 	//get column 2 row 3  of the main table for tote2
 	let toteText2 = await pageTotes.evaluate(
 		//@ts-ignore
-		(mainTableSelector) =>
-			(mainTableSelectorObject as HTMLTableElement).rows[2].cells[1].innerText,
+		(mainTableSelector) => {
+			if (
+				(document.getElementById(mainTableSelector) as HTMLTableElement)
+					?.rows[2].cells[1] == null
+			) {
+				return "";
+			}
+
+			return (document.getElementById(mainTableSelector) as HTMLTableElement)
+				?.rows[2].cells[1].innerText;
+		},
 		mainTableSelector
 	);
-
-	//if (isDocker() == false) {
-	if (true) {
-		//Lets Debug
-
-		//change background color of main table
-		//@ts-ignore
-		await pageTotes.evaluate(
-			(mainTableSelector) =>
-				(mainTableSelectorObject.style.backgroundColor = "red"),
-			mainTableSelector
-		);
-
-		//change background color of column 2 row 2
-		await pageTotes.evaluate(
-			//@ts-ignore
-			(mainTableSelector) =>
-				((
-					mainTableSelectorObject as HTMLTableElement
-				).rows[1].cells[1].style.backgroundColor = "blue"),
-			mainTableSelector
-		);
-
-		//change background color of column 2 row 3
-		await pageTotes.evaluate(
-			//@ts-ignore
-			(mainTableSelector) =>
-				((
-					mainTableSelectorObject as HTMLTableElement
-				).rows[2].cells[1].style.backgroundColor = "green"),
-			mainTableSelector
-		);
-	}
 
 	//read totes
 	//@ts-ignore
@@ -507,13 +481,23 @@ export async function updateOrderStartStatus(
 
 	await pageCarton.click("#navigation > div:nth-child(3) > a");
 
-	setOrCreateValueInDb("dematic_dashboard_WMS_Requested_Tote1", toteText1);
-	setOrCreateValueInDb("dematic_dashboard_WMS_Requested_Tote2", toteText2);
+	if (toteText1 == "" || toteText1 == null) {
+		console.error("Order Start Status Update - Tote 1 text not visible");
+		return;
+	}
+
+	if (toteText2 == "" || toteText2 == null) {
+		console.error("Order Start Status Update - Tote 2 text not visible");
+		return;
+	}
+
+	setOrCreateValueInDb("dematic_dashboard_WMS_OrderTotes", toteText1);
+	setOrCreateValueInDb("dematic_dashboard_WMS_OrderTotes_DMS", toteText2);
 
 	//update data into the Db for each tote and carton (if record exists then update, else insert)
 	for (let i = 0; i < 5; i++) {
 		setOrCreateValueInDb(
-			"dematic_dashboard_WMS_Requested_Carton" + (i + 1),
+			"dematic_dashboard_WMS_carton_erector_" + (i + 1),
 			eval("carton" + (i + 1) + "Text")
 		);
 	}
@@ -527,19 +511,24 @@ export async function updateOrderStartStatus(
 	// }
 }
 
-async function setOrCreateValueInDb(parameter: string, value: string) {
-	await db.dashboardSystemParameters.upsert({
+async function setOrCreateValueInDb(parameter: string, valueInit: string) {
+	//convert to string
+	let value = valueInit.toString();
+
+	await db.siteParameters.upsert({
 		where: {
-			parameter: parameter,
+			name: parameter,
 		},
 		create: {
-			parameter: parameter,
+			name: parameter,
 			value: value,
-			lastModified: new Date(),
+			location: "default location", // Add appropriate value
+			description: "default description", // Add appropriate value
+			lastUpdated: new Date(),
 		},
 		update: {
 			value: value,
-			lastModified: new Date(),
+			lastUpdated: new Date(),
 		},
 	});
 }
