@@ -2,7 +2,7 @@
 //log functions
 //Created by: JWL
 //Date: 2023-12-30
-//Last modified: 2024/11/04 03:14:04
+//Last modified: 2024/11/04 04:18:36
 //Version: 0.0.1
 
 //imports
@@ -71,6 +71,7 @@ async function getLogFiles(
 
 				//@ts-ignore (on page js)
 				await page.evaluate(
+					//@ts-ignore (on page js)
 					(val) => (document.querySelector(val).checked = false),
 					"#" + logList[i]
 				);
@@ -84,7 +85,9 @@ async function getLogFiles(
 			try {
 				//@ts-ignore (on page js)
 				await page.evaluate(
+					//@ts-ignore (on page js)
 					(val) => (document.querySelector(val).checked = true),
+					//@ts-ignore (on page js)
 					"#" + logList[logArray[i]]
 				);
 			} catch (e) {}
@@ -108,6 +111,7 @@ async function getLogFiles(
 			//Add today to query
 			//@ts-ignore
 			await page.evaluate(
+				//@ts-ignore (on page js)
 				(val) => (document.querySelector("#Qry1").value = val),
 				dateTime
 			);
@@ -116,6 +120,7 @@ async function getLogFiles(
 		//add the query to the search box
 		//@ts-ignore
 		await page.evaluate(
+			//@ts-ignore (on page js)
 			(val) => (document.querySelector("#Qry2").value = val),
 			query
 		);
