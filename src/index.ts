@@ -1,7 +1,7 @@
 //Service for Dematic Dashboard Screwfix trentham to collect data from WMS ( Matflow ) and push into the dashboard database
 //Created by: JWL
 //Date: 2024/10/23
-//Last modified: 2024/10/24 12:10:45
+//Last modified: 2024/11/04 03:06:15
 const version = "1.0.0";
 
 //imports
@@ -9,6 +9,7 @@ import cron from "node-cron";
 import * as puppeteer from "puppeteer";
 
 import browser from "./browser/browser.js";
+import wms from "./browser/wms.js";
 
 //startup text
 console.log("Dematic Dashboard Micro Service - WMS To DB");
@@ -172,49 +173,73 @@ await checkBrowserStatus();
 
 //restart the browser every 5 minutes
 cron.schedule("*/5 * * * *", async () => {
-
 	try {
-	  //wait until the function is not running
-	  reload();
+		//wait until the function is not running
+		reload();
 	} catch (e) {
-	  console.log(e);
+		console.log(e);
 	}
-  });
-  
-  async function reload() {
+});
+
+async function reload() {
 	if (SecondsStillRunning5 !== "notRunning") {
-	  setTimeout(() => {
-		console.log("Waiting for function to finish c: " + reloadMissedCounter + " " + SecondsStillRunning5);
-		reloadMissedCounter++;
-  
-		if (reloadMissedCounter > 60) {
-		  console.log("Killing process c");
-		  process.exit(0);
-		} else {
-		  reload();
-		}
-	  }, 1000);
-  
-	  return;
+		setTimeout(() => {
+			console.log(
+				"Waiting for function to finish c: " +
+					reloadMissedCounter +
+					" " +
+					SecondsStillRunning5
+			);
+			reloadMissedCounter++;
+
+			if (reloadMissedCounter > 60) {
+				console.log("Killing process c");
+				process.exit(0);
+			} else {
+				reload();
+			}
+		}, 1000);
+
+		return;
 	}
-  
+
 	SecondsStillRunning5 = "Reload";
-  
+
 	reloadMissedCounter = 0;
-  
+
 	//close all the pages
 	await browser.closeBrowser(browserInstance);
-  
+
 	browserInstance = await browser.startBrowser(true);
-  
+
 	//login to WMS
 	const host = await browser.wms.loginToWMS(browserInstance);
-  
+
 	//open the tote page
-	pages.totePage = await browser.openNewTab(browserInstance, host + "/cgi-bin/web_om_td1.exe#scr=workloadlimitssum&LimitTab=2");
-  
+	pages.totePage = await browser.openNewTab(
+		browserInstance,
+		host + "/cgi-bin/web_om_td1.exe#scr=workloadlimitssum&LimitTab=2"
+	);
+
 	//open the carton page
-	pages.CartonPage = await browser.openNewTab(browserInstance, host + "/cgi-bin/web_om_td1.exe#scr=std_detail_MAT_FLOW&CurrentDetailTab=1804");
-  
+	pages.CartonPage = await browser.openNewTab(
+		browserInstance,
+		host +
+			"/cgi-bin/web_om_td1.exe#scr=std_detail_MAT_FLOW&CurrentDetailTab=1804"
+	);
+
 	SecondsStillRunning5 = "notRunning";
-  }
+}
+
+//1 hour cron job (5 minute past the hour)
+cron.schedule("5 * * * *", async () => {
+	try {
+		await wms.dms.shuttleCounts.getShuttleCounts(browserInstance, mainHost);
+	} catch (e) {
+		console.log(e);
+	}
+});
+
+setTimeout(() => {
+	wms.dms.shuttleCounts.getShuttleCounts(browserInstance, mainHost);
+}, 10000);
