@@ -1,7 +1,7 @@
 //Service for Dematic Dashboard Screwfix trentham to collect data from WMS ( Matflow ) and push into the dashboard database
 //Created by: JWL
 //Date: 2024/10/23
-//Last modified: 2024/11/04 03:39:06
+//Last modified: 2024/11/04 05:15:54
 const version = "1.0.0";
 
 //imports
@@ -234,8 +234,13 @@ async function reload() {
 //1 hour cron job (5 minute past the hour)
 cron.schedule("5 * * * *", async () => {
 	try {
+		console.log("get shuttle dms counts");
 		await wms.dms.shuttleCounts.getShuttleCounts(browserInstance, mainHost);
 	} catch (e) {
 		console.log(e);
 	}
 });
+
+setTimeout(async () => {
+	//await wms.dms.shuttleCounts.getShuttleCounts(browserInstance, mainHost);
+}, 15000);
