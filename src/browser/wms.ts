@@ -2,7 +2,7 @@
 //WMS functions
 //Created by: JWL
 //Date: 2022-12-30
-//Last modified: 2024/11/04 03:43:12
+//Last modified: 2024/11/04 04:10:40
 //Version: 0.0.1
 
 import * as puppeteer from "puppeteer";
@@ -13,7 +13,7 @@ import browser from "../browser/browser.js";
 //import tours from "./tours/index.js";
 //import dms from "./dms/index.js";
 
-import shuttleCounts from "./logs/dms/shuttleCounts.js";
+import shuttleCounts from "./logs/dmsLogs/shuttleCounts.js";
 
 import db from "../db/db.js";
 
