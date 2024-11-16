@@ -81,7 +81,7 @@ cron.schedule("*/1 * * * *", async () => {
 });
 
 //every 12 hours check to see if the WMS password needs to be changed
-cron.schedule("0 */12 * * *", checkPassword);
+//cron.schedule("0 */12 * * *", checkPassword);
 
 async function pageRefresh() {
 	if (SecondsStillRunning5 !== "notRunning") {
