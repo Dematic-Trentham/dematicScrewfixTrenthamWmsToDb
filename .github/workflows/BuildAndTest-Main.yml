@@ -52,11 +52,13 @@ jobs:
 
       - name: Push Image
         run: |
-          docker tag dematicscrewfixtrenthamwmstodb:latest jwlyons/dematicscrewfixtrenthamwmstodb:${{ steps.metadata.outputs.version }}
+          docker tag dematicscrewfixtrenthamwmstodb:latest jwlyons/dematicscrewfixtrenthamwmstodb:latest
           docker push jwlyons/dematicscrewfixtrenthamwmstodb:latest
+          docker tag dematicscrewfixtrenthamwmstodb:latest jwlyons/dematicscrewfixtrenthamwmstodb:${{ steps.metadata.outputs.version }}
           docker push jwlyons/dematicscrewfixtrenthamwmstodb:${{ steps.metadata.outputs.version }}
 
       - name: Remove Docker Images
         run: |
           docker rmi dematicscrewfixtrenthamwmstodb:latest
+          docker rmi jwlyons/dematicscrewfixtrenthamwmstodb:latest
           docker rmi jwlyons/dematicscrewfixtrenthamwmstodb:${{ steps.metadata.outputs.version }}
