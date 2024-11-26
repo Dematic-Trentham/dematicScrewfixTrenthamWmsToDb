@@ -287,233 +287,239 @@ export async function updateOrderStartStatus(
 	pageTotes: puppeteer.Page,
 	pageCarton: puppeteer.Page
 ) {
-	console.log("Updating Order Start Status");
-	//if pages are not loaded then return
-	if (pageTotes == null || pageCarton == null) {
-		console.log("Pages not loaded");
-		return;
-	}
+	try {
+		console.log("Updating Order Start Status");
+		//if pages are not loaded then return
+		if (pageTotes == null || pageCarton == null) {
+			console.log("Pages not loaded");
+			return;
+		}
 
-	//get the orderstart fields from db
-	//var sql = "SELECT * FROM parameters WHERE parameter LIKE 'dematic_dashboard_OrderStart_parameters_%'";
+		//get the orderstart fields from db
+		//var sql = "SELECT * FROM parameters WHERE parameter LIKE 'dematic_dashboard_OrderStart_parameters_%'";
 
-	//run the query
-	//var SQLresult = await mysql.query(sql, []);
+		//run the query
+		//var SQLresult = await mysql.query(sql, []);
 
-	const SQLresult = await db.dashboardSystemParameters.findMany({
-		where: {
-			parameter: {
-				startsWith: "dematic_dashboard_OrderStart_parameters_",
+		const SQLresult = await db.dashboardSystemParameters.findMany({
+			where: {
+				parameter: {
+					startsWith: "dematic_dashboard_OrderStart_parameters_",
+				},
 			},
-		},
-	});
+		});
 
-	//if the result is empty
-	if (SQLresult.length == 0) {
-		console.log(
-			"Error: No Order Start Status found in DB - Please add to the parameters table e.g. dematic_dashboard_OrderStart_parameters_toteText1"
-		);
-		return;
-	}
+		//if the result is empty
+		if (SQLresult.length == 0) {
+			console.log(
+				"Error: No Order Start Status found in DB - Please add to the parameters table e.g. dematic_dashboard_OrderStart_parameters_toteText1"
+			);
+			return;
+		}
 
-	let fields = {
-		toteTableSelector: "",
-		cartonTableSelector: "",
-		carton1Field: "",
-		carton2Field: "",
-		carton3Field: "",
-		carton4Field: "",
-		carton5Field: "",
-		Carton1: "",
-		Carton2: "",
-		Carton3: "",
-		Carton4: "",
-		Carton5: "",
-	};
+		let fields = {
+			toteTableSelector: "",
+			cartonTableSelector: "",
+			carton1Field: "",
+			carton2Field: "",
+			carton3Field: "",
+			carton4Field: "",
+			carton5Field: "",
+			Carton1: "",
+			Carton2: "",
+			Carton3: "",
+			Carton4: "",
+			Carton5: "",
+		};
 
-	//loop through the results
-	for (let i = 0; i < SQLresult.length; i++) {
-		//get the parameter name
-		let parameter = SQLresult[i].parameter;
+		//loop through the results
+		for (let i = 0; i < SQLresult.length; i++) {
+			//get the parameter name
+			let parameter = SQLresult[i].parameter;
 
-		//get the parameter value
-		let value = SQLresult[i].value;
+			//get the parameter value
+			let value = SQLresult[i].value;
 
-		//get the parameter name without the prefix
-		let parameterName = parameter.replace(
-			"dematic_dashboard_OrderStart_parameters_",
-			""
-		);
+			//get the parameter name without the prefix
+			let parameterName = parameter.replace(
+				"dematic_dashboard_OrderStart_parameters_",
+				""
+			);
 
-		//set the value in the fields object
-		//@ts-ignore
-		fields[parameterName] = value;
-	}
-
-	//lets work out the field name for totes
-	let mainTableSelector = fields.toteTableSelector;
-
-	let mainTable = await pageTotes.evaluate(
-		(mainTableSelector) => document.getElementById(mainTableSelector),
-		mainTableSelector
-	);
-
-	//if the main table is not found then throw an error
-	if (mainTable == null) {
-		console.error("Order Start Status Update - Main table not found");
-
-		throw new Error(
-			"Order Start Status Update - Main table not found, please check the selector for the main table for totes"
-		);
-		return;
-	}
-
-	if (mainTableSelector == "") {
-		console.error("Order Start Status Update - Main table selector not found");
-		return;
-	}
-
-	//get column 2 row 2 of the main table for tote1
-	let toteText1 = await pageTotes.evaluate(
-		//@ts-ignore
-		(mainTableSelector) => {
-			if (
-				(document.getElementById(mainTableSelector) as HTMLTableElement)
-					?.rows[1].cells[1] == null
-			) {
-				return "";
-			}
-
-			return (document.getElementById(mainTableSelector) as HTMLTableElement)
-				?.rows[1].cells[1].innerText;
-		},
-		mainTableSelector
-	);
-
-	//get column 2 row 3  of the main table for tote2
-	let toteText2 = await pageTotes.evaluate(
-		//@ts-ignore
-		(mainTableSelector) => {
-			if (
-				(document.getElementById(mainTableSelector) as HTMLTableElement)
-					?.rows[2].cells[1] == null
-			) {
-				return "";
-			}
-
-			return (document.getElementById(mainTableSelector) as HTMLTableElement)
-				?.rows[2].cells[1].innerText;
-		},
-		mainTableSelector
-	);
-
-	//read totes
-	//@ts-ignore
-	//let toteText1 = await pageTotes.evaluate((fields) => parseInt(document.querySelector(fields.Tote1).textContent), fields);
-	//@ts-ignore
-	//let toteText2 = await pageTotes.evaluate((fields) => parseInt(document.querySelector(fields.Tote2).textContent), fields);
-
-	//lets work out the field name for cartons
-	//console.log(fields.cartonTableSelector);
-	//get the whole table for cartons
-	const logLabels = await pageCarton.evaluate((fields) => {
-		let data = [];
-		let table = document.getElementById(fields.cartonTableSelector);
-
-		//debug
-		//make the table red
-		//@ts-ignore
-		table.style.backgroundColor = "red";
-
-		//@ts-ignore
-		for (var i = 1; i < table.rows.length; i++) {
+			//set the value in the fields object
 			//@ts-ignore
-			let objCells = table.rows.item(i).cells;
+			fields[parameterName] = value;
+		}
 
-			let values = [];
-			for (var j = 0; j < objCells.length; j++) {
-				console.log(objCells.item(j).innerText);
-				let line = objCells.item(j).innerText.split("\n");
+		//lets work out the field name for totes
+		let mainTableSelector = fields.toteTableSelector;
 
-				for (let k = 0; k < line.length; k++) {
-					//data.push(line[k]);
+		let mainTable = await pageTotes.evaluate(
+			(mainTableSelector) => document.getElementById(mainTableSelector),
+			mainTableSelector
+		);
+
+		//if the main table is not found then throw an error
+		if (mainTable == null) {
+			console.error("Order Start Status Update - Main table not found");
+
+			throw new Error(
+				"Order Start Status Update - Main table not found, please check the selector for the main table for totes"
+			);
+			return;
+		}
+
+		if (mainTableSelector == "") {
+			console.error(
+				"Order Start Status Update - Main table selector not found"
+			);
+			return;
+		}
+
+		//get column 2 row 2 of the main table for tote1
+		let toteText1 = await pageTotes.evaluate(
+			//@ts-ignore
+			(mainTableSelector) => {
+				if (
+					(document.getElementById(mainTableSelector) as HTMLTableElement)
+						?.rows[1].cells[1] == null
+				) {
+					return "";
 				}
-				data.push(line);
+
+				return (document.getElementById(mainTableSelector) as HTMLTableElement)
+					?.rows[1].cells[1].innerText;
+			},
+			mainTableSelector
+		);
+
+		//get column 2 row 3  of the main table for tote2
+		let toteText2 = await pageTotes.evaluate(
+			//@ts-ignore
+			(mainTableSelector) => {
+				if (
+					(document.getElementById(mainTableSelector) as HTMLTableElement)
+						?.rows[2].cells[1] == null
+				) {
+					return "";
+				}
+
+				return (document.getElementById(mainTableSelector) as HTMLTableElement)
+					?.rows[2].cells[1].innerText;
+			},
+			mainTableSelector
+		);
+
+		//read totes
+		//@ts-ignore
+		//let toteText1 = await pageTotes.evaluate((fields) => parseInt(document.querySelector(fields.Tote1).textContent), fields);
+		//@ts-ignore
+		//let toteText2 = await pageTotes.evaluate((fields) => parseInt(document.querySelector(fields.Tote2).textContent), fields);
+
+		//lets work out the field name for cartons
+		//console.log(fields.cartonTableSelector);
+		//get the whole table for cartons
+		const logLabels = await pageCarton.evaluate((fields) => {
+			let data = [];
+			let table = document.getElementById(fields.cartonTableSelector);
+
+			//debug
+			//make the table red
+			//@ts-ignore
+			table.style.backgroundColor = "red";
+
+			//@ts-ignore
+			for (var i = 1; i < table.rows.length; i++) {
+				//@ts-ignore
+				let objCells = table.rows.item(i).cells;
+
+				let values = [];
+				for (var j = 0; j < objCells.length; j++) {
+					console.log(objCells.item(j).innerText);
+					let line = objCells.item(j).innerText.split("\n");
+
+					for (let k = 0; k < line.length; k++) {
+						//data.push(line[k]);
+					}
+					data.push(line);
+				}
+			}
+
+			return data;
+		}, fields);
+
+		//make list of field names and values, key value pairs
+		var list = [];
+
+		var lastField = "";
+
+		//even are field names and odd are values, make into key value pairs
+		for (let i = 0; i < logLabels.length; i++) {
+			if (i % 2 == 0) {
+				lastField = logLabels[i][0];
+			} else {
+				list.push({ [lastField]: logLabels[i][0] });
 			}
 		}
 
-		return data;
-	}, fields);
+		// do we see carton 1 text in array
+		var carton1Text = getValue(list, fields.carton1Field);
+		var carton2Text = getValue(list, fields.carton2Field);
+		var carton3Text = getValue(list, fields.carton3Field);
+		var carton4Text = getValue(list, fields.carton4Field);
+		var carton5Text = getValue(list, fields.carton5Field);
 
-	//make list of field names and values, key value pairs
-	var list = [];
+		//console.log(carton1Text);
+		//console.log(carton2Text);
+		// console.log(carton3Text);
+		// console.log(carton4Text);
+		// console.log(carton5Text);
 
-	var lastField = "";
+		//read cartons
+		//@ts-ignore
+		// let carton1Text = await pageCarton.evaluate((fields) => parseInt(document.querySelector(fields.Carton1).textContent), fields);
+		//@ts-ignore
+		//let carton2Text = await pageCarton.evaluate((fields) => parseInt(document.querySelector(fields.Carton2).textContent), fields);
+		//@ts-ignore
+		// let carton3Text = await pageCarton.evaluate((fields) => parseInt(document.querySelector(fields.Carton3).textContent), fields);
+		//@ts-ignore
+		// let carton4Text = await pageCarton.evaluate((fields) => parseInt(document.querySelector(fields.Carton4).textContent), fields);
+		//@ts-ignore
+		// let carton5Text = await pageCarton.evaluate((fields) => parseInt(document.querySelector(fields.Carton5).textContent), fields);
 
-	//even are field names and odd are values, make into key value pairs
-	for (let i = 0; i < logLabels.length; i++) {
-		if (i % 2 == 0) {
-			lastField = logLabels[i][0];
-		} else {
-			list.push({ [lastField]: logLabels[i][0] });
+		await pageCarton.click("#navigation > div:nth-child(3) > a");
+
+		if (toteText1 == "" || toteText1 == null) {
+			console.error("Order Start Status Update - Tote 1 text not visible");
+			return;
 		}
+
+		if (toteText2 == "" || toteText2 == null) {
+			console.error("Order Start Status Update - Tote 2 text not visible");
+			return;
+		}
+
+		setOrCreateValueInDb("dematic_dashboard_WMS_OrderTotes", toteText1);
+		setOrCreateValueInDb("dematic_dashboard_WMS_OrderTotes_DMS", toteText2);
+
+		//update data into the Db for each tote and carton (if record exists then update, else insert)
+		for (let i = 0; i < 5; i++) {
+			setOrCreateValueInDb(
+				"dematic_dashboard_WMS_carton_erector_" + (i + 1),
+				eval("carton" + (i + 1) + "Text")
+			);
+		}
+
+		//done
+		console.log("Order Start Status Update - Done");
+
+		//if (!result) {
+		//  console.error("Order Start Status Update - Carton 2 text not visible");
+		//  return;
+		// }
+	} catch (e) {
+		console.log("Error in updateOrderStartStatus", e);
 	}
-
-	// do we see carton 1 text in array
-	var carton1Text = getValue(list, fields.carton1Field);
-	var carton2Text = getValue(list, fields.carton2Field);
-	var carton3Text = getValue(list, fields.carton3Field);
-	var carton4Text = getValue(list, fields.carton4Field);
-	var carton5Text = getValue(list, fields.carton5Field);
-
-	//console.log(carton1Text);
-	//console.log(carton2Text);
-	// console.log(carton3Text);
-	// console.log(carton4Text);
-	// console.log(carton5Text);
-
-	//read cartons
-	//@ts-ignore
-	// let carton1Text = await pageCarton.evaluate((fields) => parseInt(document.querySelector(fields.Carton1).textContent), fields);
-	//@ts-ignore
-	//let carton2Text = await pageCarton.evaluate((fields) => parseInt(document.querySelector(fields.Carton2).textContent), fields);
-	//@ts-ignore
-	// let carton3Text = await pageCarton.evaluate((fields) => parseInt(document.querySelector(fields.Carton3).textContent), fields);
-	//@ts-ignore
-	// let carton4Text = await pageCarton.evaluate((fields) => parseInt(document.querySelector(fields.Carton4).textContent), fields);
-	//@ts-ignore
-	// let carton5Text = await pageCarton.evaluate((fields) => parseInt(document.querySelector(fields.Carton5).textContent), fields);
-
-	await pageCarton.click("#navigation > div:nth-child(3) > a");
-
-	if (toteText1 == "" || toteText1 == null) {
-		console.error("Order Start Status Update - Tote 1 text not visible");
-		return;
-	}
-
-	if (toteText2 == "" || toteText2 == null) {
-		console.error("Order Start Status Update - Tote 2 text not visible");
-		return;
-	}
-
-	setOrCreateValueInDb("dematic_dashboard_WMS_OrderTotes", toteText1);
-	setOrCreateValueInDb("dematic_dashboard_WMS_OrderTotes_DMS", toteText2);
-
-	//update data into the Db for each tote and carton (if record exists then update, else insert)
-	for (let i = 0; i < 5; i++) {
-		setOrCreateValueInDb(
-			"dematic_dashboard_WMS_carton_erector_" + (i + 1),
-			eval("carton" + (i + 1) + "Text")
-		);
-	}
-
-	//done
-	console.log("Order Start Status Update - Done");
-
-	//if (!result) {
-	//  console.error("Order Start Status Update - Carton 2 text not visible");
-	//  return;
-	// }
 }
 
 async function setOrCreateValueInDb(parameter: string, valueInit: string) {
