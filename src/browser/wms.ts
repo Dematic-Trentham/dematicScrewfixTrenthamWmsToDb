@@ -491,11 +491,6 @@ export async function updateOrderStartStatus(
 			const result = await pageCarton.click(
 				"#navigation > div:nth-child(3) > a"
 			);
-
-			if (result == null) {
-				console.error("Order Start Status Update - Carton 2 text not visible");
-				return;
-			}
 		} else {
 			console.error("Order Start Status Update - pageCarton is not loaded");
 			return;
