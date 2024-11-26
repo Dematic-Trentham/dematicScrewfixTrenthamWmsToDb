@@ -25,6 +25,8 @@ cron.schedule("*/5 * * * * *", async () => {
 	console.log();
 	console.log("Running 5s cron job");
 
+	SecondsStillRunning5 = "running";
+
 	//start timer for this function
 	const start = Date.now();
 	const tasks = [
@@ -48,6 +50,8 @@ cron.schedule("*/5 * * * * *", async () => {
 			}
 		})
 	);
+
+	SecondsStillRunning5 = "notRunning";
 
 	//how long did this function take to run?
 	const end = Date.now();
@@ -80,8 +84,8 @@ cron.schedule("*/1 * * * *", async () => {
 	}
 });
 
-//every 12 hours check to see if the WMS password needs to be changed
-//cron.schedule("0 */12 * * *", checkPassword);
+//every 2 days check the password
+cron.schedule("0 0 */2 * *", checkPassword);
 
 async function pageRefresh() {
 	if (SecondsStillRunning5 !== "notRunning") {
@@ -164,7 +168,7 @@ async function checkPassword() {
 
 	SecondsStillRunning5 = "password";
 
-	await browser.wms.checkPassword(browserInstance);
+	await browser.wms.checkPassword(browserInstance, mainHost);
 
 	SecondsStillRunning5 = "notRunning";
 }
@@ -172,7 +176,7 @@ async function checkPassword() {
 await checkBrowserStatus();
 
 //restart the browser every 5 minutes
-cron.schedule("*/5 * * * *", async () => {
+cron.schedule("2 * * * *", async () => {
 	try {
 		//wait until the function is not running
 		reload();
@@ -242,5 +246,5 @@ cron.schedule("5 * * * *", async () => {
 });
 
 setTimeout(async () => {
-	//await wms.dms.shuttleCounts.getShuttleCounts(browserInstance, mainHost);
+	await checkPassword();
 }, 15000);

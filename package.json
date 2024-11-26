@@ -25,11 +25,12 @@
 	"dependencies": {
 		"@prisma/client": "^5.21.1",
 		"node-cron": "^3.0.3",
-		"puppeteer": "^23.8.0"
+		"puppeteer": "^23.9.0"
 	},
 	"devDependencies": {
 		"@types/node": "^22.7.9",
 		"@types/node-cron": "^3.0.11",
+		"@types/puppeteer": "^5.4.7",
 		"masterPrismaSchema": "git+https://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:x-oauth-basic@github.com/jameswlyons/dematicDashboardScrewfixTrenthamMasterPrismaSchema.git",
 		"prettier": "^3.3.3",
 		"prisma": "^5.21.1"
