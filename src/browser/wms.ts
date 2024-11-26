@@ -487,7 +487,19 @@ export async function updateOrderStartStatus(
 		//@ts-ignore
 		// let carton5Text = await pageCarton.evaluate((fields) => parseInt(document.querySelector(fields.Carton5).textContent), fields);
 
-		await pageCarton.click("#navigation > div:nth-child(3) > a");
+		if (pageCarton) {
+			const result = await pageCarton.click(
+				"#navigation > div:nth-child(3) > a"
+			);
+
+			if (result == null) {
+				console.error("Order Start Status Update - Carton 2 text not visible");
+				return;
+			}
+		} else {
+			console.error("Order Start Status Update - pageCarton is not loaded");
+			return;
+		}
 
 		if (toteText1 == "" || toteText1 == null) {
 			console.error("Order Start Status Update - Tote 1 text not visible");
