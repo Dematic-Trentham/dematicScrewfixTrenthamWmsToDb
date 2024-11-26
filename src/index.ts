@@ -244,7 +244,3 @@ cron.schedule("5 * * * *", async () => {
 		console.log(e);
 	}
 });
-
-setTimeout(async () => {
-	await checkPassword();
-}, 15000);
