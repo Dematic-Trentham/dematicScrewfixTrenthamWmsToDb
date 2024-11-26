@@ -162,7 +162,7 @@ export async function changePassword(
 	if (result) {
 		console.log("Password changed successfully");
 
-		db.dashboardSystemParameters.update({
+		await db.dashboardSystemParameters.update({
 			where: {
 				parameter: "dematic_dashboard_WMS_Credentials_Pass",
 			},
@@ -197,7 +197,10 @@ export async function changePassword(
 }
 
 //check if the password is should be changed
-export async function checkPassword(browserInstance: puppeteer.Browser) {
+export async function checkPassword(
+	browserInstance: puppeteer.Browser,
+	host: string
+) {
 	//check mysql db to see when the WMS password was last changed
 	const result = await db.dashboardSystemParameters.findMany({
 		where: {
@@ -260,7 +263,7 @@ export async function checkPassword(browserInstance: puppeteer.Browser) {
 	//open new tab
 	var page = await browser.openNewTab(browserInstance);
 
-	const host = await loginToWMS(browserInstance);
+	//const host = await loginToWMS(browserInstance);
 
 	//if old password is "DematicA" then change to "DematicB", else if old password is "DematicB" then change to "DematicC" else if old password is "DematicC" then change to "DematicD" then repeat
 	var newPass = "";
