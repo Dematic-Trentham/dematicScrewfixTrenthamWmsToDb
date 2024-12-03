@@ -93,6 +93,8 @@ export async function loginToWMS(
 		console.log("WMS Login Successful");
 	} else if (title == "Unknown User") {
 		console.log("WMS Login Failed due to unknown user");
+
+		//todo - update db with error message to be displayed on the dashboard, and stop all other functions from trying to login to WMs and return out
 	}
 
 	//get the host IP for  primary WMS or secondary WMS
