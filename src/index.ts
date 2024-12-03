@@ -20,8 +20,12 @@ console.log("Starting WMS To DB Service v" + version + " ....");
 //url of wms - this will be set by the login function
 let mainHost = "http://localhost:3000";
 
+import { isParameterTrue } from "./misc/getParameterFromDB.js";
+
 //run every 5 seconds
 cron.schedule("*/5 * * * * *", async () => {
+	if (await isParameterTrue("WMSFAILED")) return;
+
 	console.log();
 	console.log("Running 5s cron job");
 
@@ -77,6 +81,8 @@ let pages = {
 
 //every minute run functions
 cron.schedule("*/1 * * * *", async () => {
+	if (await isParameterTrue("WMSFAILED")) return;
+
 	try {
 		pageRefresh();
 	} catch (e) {
@@ -88,6 +94,8 @@ cron.schedule("*/1 * * * *", async () => {
 cron.schedule("0 0 */2 * *", checkPassword);
 
 async function pageRefresh() {
+	if (await isParameterTrue("WMSFAILED")) return;
+
 	if (SecondsStillRunning5 !== "notRunning") {
 		setTimeout(() => {
 			console.log(
@@ -117,6 +125,8 @@ async function pageRefresh() {
 }
 
 async function checkBrowserStatus() {
+	if (await isParameterTrue("WMSFAILED")) return;
+
 	if (browserInstance == null) {
 		//spawn a new browser
 		browserInstance = await browser.startBrowser(true);
@@ -141,6 +151,7 @@ async function checkBrowserStatus() {
 }
 
 async function checkPassword() {
+	if (await isParameterTrue("WMSFAILED")) return;
 	console.log("Checking password1");
 	if (SecondsStillRunning5 !== "notRunning") {
 		setTimeout(() => {
@@ -177,6 +188,7 @@ await checkBrowserStatus();
 
 //restart the browser every 5 minutes
 cron.schedule("2 * * * *", async () => {
+	if (await isParameterTrue("WMSFAILED")) return;
 	try {
 		//wait until the function is not running
 		reload();
@@ -186,6 +198,7 @@ cron.schedule("2 * * * *", async () => {
 });
 
 async function reload() {
+	if (await isParameterTrue("WMSFAILED")) return;
 	if (SecondsStillRunning5 !== "notRunning") {
 		setTimeout(() => {
 			console.log(
@@ -237,6 +250,7 @@ async function reload() {
 
 //1 hour cron job (5 minute past the hour)
 cron.schedule("5 * * * *", async () => {
+	if (await isParameterTrue("WMSFAILED")) return;
 	try {
 		console.log("get shuttle dms counts");
 		await wms.dms.shuttleCounts.getShuttleCounts(browserInstance, mainHost);
