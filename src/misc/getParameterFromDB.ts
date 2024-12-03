@@ -15,14 +15,29 @@ export async function getParameterFromDB(parameter: string) {
 	return result?.value;
 }
 
+export async function getParameterFromDB2(parameter: string) {
+	const result = await db.dashboardSystemParameters.findFirst({
+		where: {
+			parameter: parameter,
+		},
+	});
+
+	//if no result raise an error
+	if (!result) {
+		return null;
+	}
+
+	return result?.value;
+}
+
 export async function isParameterTrue(parameter: string) {
-	const result = await getParameterFromDB(parameter);
+	const result = await getParameterFromDB2(parameter);
 
 	return result === "true";
 }
 
 export async function isParameterFalse(parameter: string) {
-	const result = await getParameterFromDB(parameter);
+	const result = await getParameterFromDB2(parameter);
 
 	return result === "false";
 }
