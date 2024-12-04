@@ -1,4 +1,5 @@
 import db from "./db.js";
+//
 
 //update or insert error into the db
 export async function updateErrorInDB(system: string, error: string) {
