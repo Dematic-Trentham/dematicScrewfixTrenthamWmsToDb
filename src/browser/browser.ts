@@ -56,7 +56,7 @@ async function startBrowser(headless: boolean): Promise<puppeteer.Browser> {
 		};
 	}
 
-	 //console.log("Make 1");
+	//console.log("Make 1");
 
 	//start the browser and create a browser instance within docker container
 	const browser = await puppeteer.launch(browserOptions);
@@ -89,6 +89,11 @@ async function openNewTab(browserInstance: puppeteer.Browser, url?: string) {
 //refresh all tabs
 async function refreshAllTabs(pageArray: any) {
 	console.log("Refreshing all tabs ...");
+
+	if (wms.isLoggedIn() == false) {
+		console.log("Not logged in");
+		return;
+	}
 
 	//loop through all pages
 	for (var i = 0; i < pageArray.length; i++) {

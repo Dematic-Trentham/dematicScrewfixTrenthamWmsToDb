@@ -24,20 +24,6 @@ import { isParameterTrue } from "./misc/getParameterFromDB.js";
 
 import db from "./db/db.js";
 
-start();
-
-async function start() {
-	//set the WMSFAILED parameter to false
-	db.dashboardSystemParameters.update({
-		where: {
-			parameter: "WMSFAILED",
-		},
-		data: {
-			value: "false",
-		},
-	});
-}
-
 //run every 5 seconds
 cron.schedule("*/5 * * * * *", async () => {
 	if (await isParameterTrue("WMSFAILED")) return;
@@ -147,6 +133,13 @@ async function checkBrowserStatus() {
 		//login to WMS
 		const host = await browser.wms.loginToWMS(browserInstance);
 
+		console.log("Host: " + host + " " + wms.isLoggedIn());
+
+		if (wms.isLoggedIn() == false) {
+			console.log("Not logged in");
+			return;
+		}
+
 		mainHost = host;
 		//open the tote page
 		pages.totePage = await browser.openNewTab(
@@ -244,6 +237,11 @@ async function reload() {
 
 	//login to WMS
 	const host = await browser.wms.loginToWMS(browserInstance);
+
+	if (wms.isLoggedIn() == false) {
+		console.log("Not logged in");
+		return;
+	}
 
 	//open the tote page
 	pages.totePage = await browser.openNewTab(

@@ -21,11 +21,25 @@ import db from "../db/db.js";
 import { getParameterFromDB } from "../misc/getParameterFromDB.js";
 import { updateErrorInDB } from "../db/helpers.js";
 
+let currentlyTryingToLogin = false;
+
+let loggedIn = false;
+
 //go to the WMS and login using the username and password provided, then return the host IP
 
 export async function loginToWMS(
 	browserInstance: puppeteer.Browser
 ): Promise<string> {
+	console.log(currentlyTryingToLogin);
+
+	//if already trying to login then return
+	if (currentlyTryingToLogin) {
+		return "";
+	}
+
+	//set currently trying to login to true
+	currentlyTryingToLogin = true;
+
 	//open new tab
 	var page = await browser.openNewTab(browserInstance);
 
@@ -97,6 +111,8 @@ export async function loginToWMS(
 		});
 	} catch (e) {}
 
+	console.log("pp1");
+
 	//get title of current page
 	// @ts-ignore
 	const title = await page.evaluate(
@@ -109,7 +125,7 @@ export async function loginToWMS(
 	} else if (title == "Unknown User") {
 		console.log("WMS Login Failed due to unknown user");
 
-		//todo - update db with error message to be displayed on the dashboard, and stop all other functions from trying to login to WMs and return out
+		// update db with error message to be displayed on the dashboard, and stop all other functions from trying to login to WMs and return out
 		db.dashboardSystemParameters.update({
 			where: {
 				parameter: "WMSFAILED",
@@ -123,10 +139,11 @@ export async function loginToWMS(
 			"dematic-dashboard-dematicscrewfixtrenthamwmstodb",
 			"WMS Login Failed due to unknown user"
 		);
+		return "";
 	} else {
 		console.log("WMS Login Failed");
 
-		//todo - update db with error message to be displayed on the dashboard, and stop all other functions from trying to login to WMs and return out
+		// - update db with error message to be displayed on the dashboard, and stop all other functions from trying to login to WMs and return out
 		db.dashboardSystemParameters.update({
 			where: {
 				parameter: "WMSFAILED",
@@ -145,6 +162,7 @@ export async function loginToWMS(
 		await page.screenshot({
 			path: `/persistent/error-${new Date().toISOString()}.png`,
 		});
+		return "";
 	}
 
 	//get the host IP for  primary WMS or secondary WMS
@@ -155,6 +173,12 @@ export async function loginToWMS(
 
 	//close the page
 	//await page.close();
+
+	//set currently trying to login to false
+	currentlyTryingToLogin = false;
+
+	//set logged in to true
+	loggedIn = true;
 
 	//return the host IP
 	return hostIP;
@@ -339,6 +363,11 @@ export async function updateOrderStartStatus(
 	pageTotes: puppeteer.Page,
 	pageCarton: puppeteer.Page
 ) {
+	if (loggedIn == false) {
+		console.log("Not logged in");
+		return;
+	}
+
 	try {
 		console.log("Updating Order Start Status");
 		//if pages are not loaded then return
@@ -415,9 +444,22 @@ export async function updateOrderStartStatus(
 		if (mainTable == null) {
 			console.error("Order Start Status Update - Main table not found");
 
-			throw new Error(
-				"Order Start Status Update - Main table not found, please check the selector for the main table for totes"
+			//wmsfailed
+			await db.dashboardSystemParameters.update({
+				where: {
+					parameter: "WMSFAILED",
+				},
+				data: {
+					value: "true",
+				},
+			});
+
+			//update error in db
+			updateErrorInDB(
+				"dematic-dashboard-dematicscrewfixtrenthamwmstodb",
+				"Order Start Status Update - Main table not found pp1"
 			);
+
 			return;
 		}
 
@@ -425,6 +467,23 @@ export async function updateOrderStartStatus(
 			console.error(
 				"Order Start Status Update - Main table selector not found"
 			);
+
+			//wmsfailed
+			await db.dashboardSystemParameters.update({
+				where: {
+					parameter: "WMSFAILED",
+				},
+				data: {
+					value: "true",
+				},
+			});
+
+			//update error in db
+			updateErrorInDB(
+				"dematic-dashboard-dematicscrewfixtrenthamwmstodb",
+				"Order Start Status Update - Main table selector not found - pp2"
+			);
+
 			return;
 		}
 
@@ -633,6 +692,10 @@ function hoursBetweenToDates(date1: Date, date2: Date) {
 	return Math.ceil(diff / (1000 * 3600));
 }
 
+function isLoggedIn() {
+	return loggedIn;
+}
+
 //export
 export default {
 	loginToWMS,
@@ -642,4 +705,5 @@ export default {
 	//exceptions,
 	//tours,
 	dms: { shuttleCounts },
+	isLoggedIn,
 };
