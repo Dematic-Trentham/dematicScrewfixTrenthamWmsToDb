@@ -6,6 +6,7 @@
 //Version: 0.0.1
 
 import * as puppeteer from "puppeteer";
+import * as fs from "fs/promises";
 
 import browser from "../browser/browser.js";
 //import wmsLogs from "./logs/wmsLogs.js";
@@ -18,6 +19,7 @@ import shuttleCounts from "./logs/dmsLogs/shuttleCounts.js";
 import db from "../db/db.js";
 
 import { getParameterFromDB } from "../misc/getParameterFromDB.js";
+import { updateErrorInDB } from "../db/helpers.js";
 
 //go to the WMS and login using the username and password provided, then return the host IP
 
@@ -39,6 +41,19 @@ export async function loginToWMS(
 
 	//if the username or password was not found
 	if (wmsUserPassObj.username == "" || wmsUserPassObj.password == "") {
+		db.dashboardSystemParameters.update({
+			where: {
+				parameter: "WMSFAILED",
+			},
+			data: {
+				value: "true",
+			},
+		});
+
+		console.log(
+			`[${new Date().toISOString()}] Error: WMS Username or Password not found in DB - Please add to the parameters table e.g. dematic_dashboard_WMS_Credentials_User`
+		);
+
 		return "failed";
 	}
 
@@ -95,6 +110,41 @@ export async function loginToWMS(
 		console.log("WMS Login Failed due to unknown user");
 
 		//todo - update db with error message to be displayed on the dashboard, and stop all other functions from trying to login to WMs and return out
+		db.dashboardSystemParameters.update({
+			where: {
+				parameter: "WMSFAILED",
+			},
+			data: {
+				value: "true",
+			},
+		});
+
+		updateErrorInDB(
+			"dematic-dashboard-dematicscrewfixtrenthamwmstodb",
+			"WMS Login Failed due to unknown user"
+		);
+	} else {
+		console.log("WMS Login Failed");
+
+		//todo - update db with error message to be displayed on the dashboard, and stop all other functions from trying to login to WMs and return out
+		db.dashboardSystemParameters.update({
+			where: {
+				parameter: "WMSFAILED",
+			},
+			data: {
+				value: "true",
+			},
+		});
+
+		updateErrorInDB(
+			"dematic-dashboard-dematicscrewfixtrenthamwmstodb",
+			"WMS Login Failed"
+		);
+
+		//screen shot
+		await page.screenshot({
+			path: `/persistent/error-${new Date().toISOString()}.png`,
+		});
 	}
 
 	//get the host IP for  primary WMS or secondary WMS

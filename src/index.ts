@@ -22,12 +22,25 @@ let mainHost = "http://localhost:3000";
 
 import { isParameterTrue } from "./misc/getParameterFromDB.js";
 
+import db from "./db/db.js";
+
+start();
+
+async function start() {
+	//set the WMSFAILED parameter to false
+	db.dashboardSystemParameters.update({
+		where: {
+			parameter: "WMSFAILED",
+		},
+		data: {
+			value: "false",
+		},
+	});
+}
+
 //run every 5 seconds
 cron.schedule("*/5 * * * * *", async () => {
 	if (await isParameterTrue("WMSFAILED")) return;
-
-	console.log();
-	console.log("Running 5s cron job");
 
 	SecondsStillRunning5 = "running";
 
@@ -65,7 +78,7 @@ cron.schedule("*/5 * * * * *", async () => {
 	percent = Math.round(percent * 100) / 100;
 
 	//how much percent of the 3 seconds did this function take?
-	console.log("Percent of 5 seconds : " + percent + "%");
+	//console.log("Percent of 5 seconds : " + percent + "%");
 });
 
 //counters for the 5s cron job - to check for missed runs
@@ -252,7 +265,7 @@ async function reload() {
 cron.schedule("5 * * * *", async () => {
 	if (await isParameterTrue("WMSFAILED")) return;
 	try {
-		console.log("get shuttle dms counts");
+		//console.log("get shuttle dms counts");
 		await wms.dms.shuttleCounts.getShuttleCounts(browserInstance, mainHost);
 	} catch (e) {
 		console.log(e);

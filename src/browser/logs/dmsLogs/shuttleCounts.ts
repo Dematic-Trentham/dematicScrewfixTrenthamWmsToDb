@@ -149,10 +149,6 @@ async function getShuttleCountsAisle(
 				shuttleID: shuttleID,
 			},
 		});
-
-		console.log(
-			`Level ${i} - Picks: ${pickCount} Drops: ${dropCount} IATs: ${iatCount} ShuttleID: ${shuttleID} inserted`
-		);
 	}
 }
 
