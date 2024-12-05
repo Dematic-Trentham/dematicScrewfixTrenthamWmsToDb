@@ -17,12 +17,18 @@ console.log("Starting WMS To DB Service ....");
 
 console.log("Starting WMS To DB Service v" + version + " ....");
 
+updateErrorInDB(
+	"dematic-dashboard-dematicscrewfixtrenthamwmstodb",
+	"WMS Service Started"
+);
+
 //url of wms - this will be set by the login function
 let mainHost = "http://localhost:3000";
 
 import { isParameterTrue } from "./misc/getParameterFromDB.js";
 
 import db from "./db/db.js";
+import { updateErrorInDB } from "./db/helpers.js";
 
 //run every 5 seconds
 cron.schedule("*/5 * * * * *", async () => {

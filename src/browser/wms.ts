@@ -30,6 +30,10 @@ let loggedIn = false;
 export async function loginToWMS(
 	browserInstance: puppeteer.Browser
 ): Promise<string> {
+	updateErrorInDB(
+		"dematic-dashboard-dematicscrewfixtrenthamwmstodb",
+		"WMS Service Logging in"
+	);
 	console.log(currentlyTryingToLogin);
 
 	//if already trying to login then return
@@ -179,6 +183,11 @@ export async function loginToWMS(
 
 	//set logged in to true
 	loggedIn = true;
+
+	updateErrorInDB(
+		"dematic-dashboard-dematicscrewfixtrenthamwmstodb",
+		"WMS Service Logged in"
+	);
 
 	//return the host IP
 	return hostIP;
