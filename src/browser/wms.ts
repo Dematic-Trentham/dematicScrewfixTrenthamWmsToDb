@@ -466,7 +466,7 @@ export async function updateOrderStartStatus(
 			//update error in db
 			updateErrorInDB(
 				"dematic-dashboard-dematicscrewfixtrenthamwmstodb",
-				"Order Start Status Update - Main table not found pp1"
+				"Order Start Status Update - Main table not found p1"
 			);
 
 			return;
@@ -490,7 +490,7 @@ export async function updateOrderStartStatus(
 			//update error in db
 			updateErrorInDB(
 				"dematic-dashboard-dematicscrewfixtrenthamwmstodb",
-				"Order Start Status Update - Main table selector not found - pp2"
+				"Order Start Status Update - Main table selector not found - p2"
 			);
 
 			return;
