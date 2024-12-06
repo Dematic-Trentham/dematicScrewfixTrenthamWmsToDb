@@ -59,7 +59,7 @@ export async function loginToWMS(
 
 	//if the username or password was not found
 	if (wmsUserPassObj.username == "" || wmsUserPassObj.password == "") {
-		db.dashboardSystemParameters.update({
+		await db.dashboardSystemParameters.update({
 			where: {
 				parameter: "WMSFAILED",
 			},
@@ -130,7 +130,7 @@ export async function loginToWMS(
 		console.log("WMS Login Failed due to unknown user");
 
 		// update db with error message to be displayed on the dashboard, and stop all other functions from trying to login to WMs and return out
-		db.dashboardSystemParameters.update({
+		await db.dashboardSystemParameters.update({
 			where: {
 				parameter: "WMSFAILED",
 			},
@@ -148,7 +148,7 @@ export async function loginToWMS(
 		console.log("WMS Login Failed");
 
 		// - update db with error message to be displayed on the dashboard, and stop all other functions from trying to login to WMs and return out
-		db.dashboardSystemParameters.update({
+		await db.dashboardSystemParameters.update({
 			where: {
 				parameter: "WMSFAILED",
 			},
