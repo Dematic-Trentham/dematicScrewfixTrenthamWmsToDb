@@ -22,6 +22,30 @@ updateErrorInDB(
 	"WMS Service Started"
 );
 
+//WMS reboots at 3am  so  we will fail the WMS service at 3am
+cron.schedule("0 3 * * *", async () => {
+	await db.dashboardSystemParameters.update({
+		where: {
+			parameter: "WMSFAILED",
+		},
+		data: {
+			value: "true",
+		},
+	});
+});
+
+//WMS reboots at 3.20am  so  we can start the WMS service back up at 3.30am
+cron.schedule("20 3 * * *", async () => {
+	await db.dashboardSystemParameters.update({
+		where: {
+			parameter: "WMSFAILED",
+		},
+		data: {
+			value: "false",
+		},
+	});
+});
+
 //url of wms - this will be set by the login function
 let mainHost = "http://localhost:3000";
 
