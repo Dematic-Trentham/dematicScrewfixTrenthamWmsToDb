@@ -224,7 +224,11 @@ await checkBrowserStatus();
 
 //restart the browser every 5 minutes
 cron.schedule("2 * * * *", async () => {
+	console.log("Restarting browser cron job");
+
 	if (await isParameterTrue("WMSFAILED")) return;
+
+	console.log("Restarting browser cron job2");
 	try {
 		//wait until the function is not running
 		reload();
@@ -234,7 +238,10 @@ cron.schedule("2 * * * *", async () => {
 });
 
 async function reload() {
+	console.log("Reloading browser");
 	if (await isParameterTrue("WMSFAILED")) return;
+	console.log("Reloading browser2");
+
 	if (SecondsStillRunning5 !== "notRunning") {
 		setTimeout(() => {
 			console.log(
@@ -260,10 +267,14 @@ async function reload() {
 
 	reloadMissedCounter = 0;
 
+	console.log("Reloading browser3");
+
 	//close all the pages
 	await browser.closeBrowser(browserInstance);
 
 	browserInstance = await browser.startBrowser(true);
+
+	console.log("Reloading browser4");
 
 	//login to WMS
 	const host = await browser.wms.loginToWMS(browserInstance);
@@ -286,6 +297,7 @@ async function reload() {
 			"/cgi-bin/web_om_td1.exe#scr=std_detail_MAT_FLOW&CurrentDetailTab=1804"
 	);
 
+	console.log("Reloading browser5");
 	SecondsStillRunning5 = "notRunning";
 }
 
