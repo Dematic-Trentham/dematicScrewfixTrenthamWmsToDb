@@ -169,6 +169,11 @@ export async function loginToWMS(
 			"WMS Login Failed"
 		);
 
+		//	console.log(title);
+		console.log("Document title: " + title);
+		console.log("Document URL: " + page.url());
+		console.log("WMS Page Content: " + (await page.content()));
+
 		console.log("WMS Login Failed");
 
 		//screen shot
