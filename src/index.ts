@@ -223,7 +223,7 @@ async function checkPassword() {
 await checkBrowserStatus();
 
 //restart the browser every 5 minutes
-cron.schedule("2 * * * *", async () => {
+cron.schedule("*/5 * * * *", async () => {
 	console.log("Restarting browser cron job");
 
 	if (await isParameterTrue("WMSFAILED")) return;
