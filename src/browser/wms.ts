@@ -139,10 +139,15 @@ export async function loginToWMS(
 			},
 		});
 
+		loggedIn = false;
+
 		updateErrorInDB(
 			"dematic-dashboard-dematicscrewfixtrenthamwmstodb",
 			"WMS Login Failed due to unknown user"
 		);
+
+		console.log("WMS Login Failed due to unknown user");
+
 		return "";
 	} else {
 		console.log("WMS Login Failed");
@@ -157,10 +162,14 @@ export async function loginToWMS(
 			},
 		});
 
+		loggedIn = false;
+
 		updateErrorInDB(
 			"dematic-dashboard-dematicscrewfixtrenthamwmstodb",
 			"WMS Login Failed"
 		);
+
+		console.log("WMS Login Failed");
 
 		//screen shot
 		await page.screenshot({
@@ -444,6 +453,13 @@ export async function updateOrderStartStatus(
 		//lets work out the field name for totes
 		let mainTableSelector = fields.toteTableSelector;
 
+		if (mainTableSelector == null) {
+			console.error(
+				"Order Start Status Update - Tote main table selector not found"
+			);
+			return;
+		}
+
 		let mainTable = await pageTotes.evaluate(
 			(mainTableSelector) => document.getElementById(mainTableSelector),
 			mainTableSelector
@@ -537,7 +553,7 @@ export async function updateOrderStartStatus(
 		//let toteText2 = await pageTotes.evaluate((fields) => parseInt(document.querySelector(fields.Tote2).textContent), fields);
 
 		//lets work out the field name for cartons
-		//console.log(fields.cartonTableSelector);
+		console.log(fields);
 		//get the whole table for cartons
 		const logLabels = await pageCarton.evaluate((fields) => {
 			let data = [];
@@ -568,6 +584,8 @@ export async function updateOrderStartStatus(
 			return data;
 		}, fields);
 
+		console.log(logLabels);
+
 		//make list of field names and values, key value pairs
 		var list = [];
 
@@ -591,10 +609,9 @@ export async function updateOrderStartStatus(
 
 		//console.log(carton1Text);
 		//console.log(carton2Text);
-		// console.log(carton3Text);
-		// console.log(carton4Text);
-		// console.log(carton5Text);
-
+		//console.log(carton3Text);
+		//console.log(carton4Text);
+		//console.log(carton5Text);
 		//read cartons
 		//@ts-ignore
 		// let carton1Text = await pageCarton.evaluate((fields) => parseInt(document.querySelector(fields.Carton1).textContent), fields);
