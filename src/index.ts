@@ -311,3 +311,31 @@ cron.schedule("5 * * * *", async () => {
 		console.log(e);
 	}
 });
+
+//every 5 seconds check if the paramter "restartProcess" is true, if it is then restart the process and set the parameter to false
+cron.schedule("*/5 * * * * *", async () => {
+	if (await isParameterTrue("restartWMSProcess")) {
+		console.log("Restart parameter is true, restarting process");
+		await db.dashboardSystemParameters.update({
+			where: {
+				parameter: "restartWMSProcess",
+			},
+			data: {
+				value: "false",
+			},
+		});
+
+		//restart the docker container - this will restart the whole process
+		const { exec } = await import("child_process");
+		exec(
+			"docker restart dematic-dashboard-dematicscrewfixtrenthamwmstodb",
+			(error, stdout, stderr) => {
+				if (error) {
+					console.error(`Error restarting container: ${error}`);
+					return;
+				}
+				console.log(`Container restarted: ${stdout}`);
+			}
+		);
+	}
+});

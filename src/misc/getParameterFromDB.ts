@@ -22,6 +22,17 @@ export async function getParameterFromDB2(parameter: string) {
 		},
 	});
 
+	//create the parameter if it doesn't exist
+	if (!result) {
+		await db.dashboardSystemParameters.create({
+			data: {
+				parameter: parameter,
+				value: "",
+			},
+		});
+		return "";
+	}
+
 	//if no result raise an error
 	if (!result) {
 		return null;
